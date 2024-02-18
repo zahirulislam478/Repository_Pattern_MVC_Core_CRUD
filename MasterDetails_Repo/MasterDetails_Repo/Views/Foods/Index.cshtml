@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Food>
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mt-4"><u>Food Information List</u></h2>
+<h3 class="d-flex justify-content-end mb-3">
+    <a href="@Url.Action("Create","Foods")" class="btn btn-outline-primary"> + Create</a>
+</h3>
+<div class="card">
+    @foreach (var item in Model)
+    {
+        <div class="card-header d-flex justify-content-between">
+            <div class="mt-4">
+                <label><b>FoodName:</b> @Html.DisplayFor(i => item.FoodName)</label><br />
+                <label><b>Price:</b> @Html.DisplayFor(i => item.Price)</label><br />
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>CustomerName</th>
+                            <th>Phone</th>
+                            <th>OrderDate</th>
+                            <th>TotalAmount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var info in item.Orders)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(e => info.CustomerName)</td>
+                                <td>@Html.DisplayFor(e => info.Phone)</td>
+                                <td>@Html.DisplayFor(e => info.OrderDate)</td>
+                                <td>@Html.DisplayFor(e => info.TotalAmount)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:60px;">
+                <a href="@Url.Action("Edit", "Foods", new {id=item.FoodId})" class="btn btn-outline-primary">Edit</a>
+                <input type="button" value="Delete" onclick="Delete(@item.FoodId)" class="btn btn-outline-danger" />
+            </div>
+        </div>
+    }
+</div>
+<script src="~/libs/jquery/jquery.js"></script>
+<script>
+    function Delete(id) {
+        if (confirm("Are you sure you want to delete this item?")) {
+            $.ajax({
+                type: "POST",
+                data: { id: id },
+                url: "/Foods/Delete",
+                success: function (data) {
+                    window.location.href = "/Foods/Index";
+                },
+                error: function (err) {
+                    window.location.href = "/Foods/Index";
+                }
+            });
+        }
+    }
+</script>
+
+
